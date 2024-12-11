@@ -1,0 +1,20 @@
+##### criacao de campanha
+POST http://localhost:8080/campaigns
+
+{
+   "Name": "TESTE 1",
+   "Content":"change password OK",
+   "emails":["lucasdsc96@gmail.com.br", "lucasdsc4@gmail.com.br" , "lucasdsc8@gmail.com.br"]
+}
+
+
+##### acahando  tudo  de campanha
+GET http://localhost:8080/campaigns/ctcpcbqd809lhd40b840
+
+
+##### UPDATED USUARIO para cancelamento
+PATCH http://localhost:8080/campaigns/cancel/ctcoh5ad809oul633vk0
+
+
+##### Delete usuario
+DELETE http://localhost:8080/campaigns/delete/ctcpcbqd809lhd40b840
