@@ -4,6 +4,7 @@ import (
 	"SendEmail/internal/contract"
 	"SendEmail/internalErrors"
 	"errors"
+	"gorm.io/gorm"
 )
 
 type ServiceImp struct {
@@ -21,7 +22,7 @@ type Service interface {
 func (s *ServiceImp) Delete(id string) error {
 	campaing, err := s.Repository.GetBy(id)
 	if err != nil {
-		return internalErrors.ErrInternal
+		return internalErrors.ProcessErrorToReturn(err)
 	}
 	if campaing.Status != Pending {
 		return errors.New("Campaing status invalid ")
@@ -53,8 +54,12 @@ func (s *ServiceImp) Create(dto contract.NewCampaignDto) (string, error) {
 func (s *ServiceImp) GetBy(id string) (*contract.CampaignResponse, error) {
 	campaing, err := s.Repository.GetBy(id)
 	if err != nil {
-		return nil, internalErrors.ErrInternal
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, internalErrors.ProcessErrorToReturn(err)
+		}
+		return nil, err
 	}
+
 	return &contract.CampaignResponse{
 		ID:                   campaing.ID,
 		Name:                 campaing.Name,
@@ -68,7 +73,7 @@ func (s *ServiceImp) GetBy(id string) (*contract.CampaignResponse, error) {
 func (s *ServiceImp) Cancel(id string) error {
 	campaing, err := s.Repository.GetBy(id)
 	if err != nil {
-		return internalErrors.ErrInternal
+		return internalErrors.ProcessErrorToReturn(err)
 	}
 	if campaing.Status != Pending {
 		return errors.New("Campaing status invalid ")

@@ -1,20 +1,37 @@
+@url = http://localhost:3000
+@indent_provider = http://localhost:8080
+
 ##### criacao de campanha
-POST http://localhost:8080/campaigns
+POST {{url}}/campaigns
+Authorization: Bearer {{access_token}}
 
 {
-   "Name": "TESTE 1",
-   "Content":"change password OK",
-   "emails":["lucasdsc96@gmail.com.br", "lucasdsc4@gmail.com.br" , "lucasdsc8@gmail.com.br"]
+    "Name": "Hi Henrique!",
+    "Content": "Hello!",
+	"emails":  ["salmeidabatista@gmail.com", "henrique@teste.com.br", "henrique2@teste.com.br", "henrique@teste.com.br"]
 }
 
 
 ##### acahando  tudo  de campanha
-GET http://localhost:8080/campaigns/ctcpcbqd809lhd40b840
-
+GET {{url}}/campaigns/ctcoh5ad809oul633vk0
+Authorization: Bearer {{access_token}}
 
 ##### UPDATED USUARIO para cancelamento
-PATCH http://localhost:8080/campaigns/cancel/ctcoh5ad809oul633vk0
-
+PATCH {{url}}/campaigns/cancel/ctcoh5ad809oul633vk8
+Authorization: Bearer {{access_token}}
 
 ##### Delete usuario
-DELETE http://localhost:8080/campaigns/delete/ctcpcbqd809lhd40b840
+DELETE {{url}}/campaigns/delete/ctcpcbqd809lhd40b440
+Authorization: Bearer {{access_token}}
+
+
+### geracao de token
+# @name token
+POST {{indent_provider}}/realms/provider/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=email&client_secret=OmPKPWbf9TBwnayRREpx1tDLALAikuPn&grant_type=client_credentials
+
+
+###
+@access_token  = {{token.response.body.acces_token}}

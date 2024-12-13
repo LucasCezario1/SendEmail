@@ -26,18 +26,18 @@ func main() {
 	handler := endpoints.Handler{
 		CampaignService: &service,
 	}
+	// ROTAS AUTENTICADAS
+	r.Route("/campaigns", func(r chi.Router) {
+		r.Use(endpoints.Auth)
+		//POST
+		r.Post("/", endpoints.HandlerError(handler.CampaignsPost))
+		//GET
+		r.Get("/{id}", endpoints.HandlerError(handler.CampaignsGetById))
+		// DELETE
+		r.Delete("/delete/{id}", endpoints.HandlerError(handler.CampaignsDelete))
+		// UPDATED
+		r.Patch("/cancel/{id}", endpoints.HandlerError(handler.CampaignsCancelPath))
+	})
 
-	//POST para campanha
-	r.Post("/campaigns", endpoints.HandlerError(handler.CampaignsPost))
-
-	//GET
-	r.Get("/campaigns/{id}", endpoints.HandlerError(handler.CampaignsGetById))
-
-	// UPDATED
-	r.Patch("/campaigns/cancel/{id}", endpoints.HandlerError(handler.CampaignsCancelPath))
-
-	// DELETE
-	r.Delete("/campaigns/delete/{id}", endpoints.HandlerError(handler.CampaignsDelete))
-
-	http.ListenAndServe(":8080", r)
+	http.ListenAndServe(":3000", r)
 }
