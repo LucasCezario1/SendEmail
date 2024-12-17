@@ -12,6 +12,11 @@ Authorization: Bearer {{access_token}}
 }
 
 
+##### Start usuario
+PATCH {{url}}/campaigns/start/ctcpcbqd809lhd40b440
+Authorization: Bearer {{access_token}}
+
+
 ##### acahando  tudo  de campanha
 GET {{url}}/campaigns/ctcoh5ad809oul633vk0
 Authorization: Bearer {{access_token}}

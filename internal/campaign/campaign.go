@@ -12,6 +12,7 @@ const (
 	Started  string = "started"
 	Canceled string = "canceled"
 	Deleted  string = "deleted"
+	Fail     string = "fail"
 	Done     string = "done"
 )
 
@@ -30,12 +31,24 @@ type Campaign struct {
 	Status    string    `gorm:"size:20"`
 }
 
+func (c *Campaign) Started() {
+	c.Status = Started
+}
+
 func (c *Campaign) Cancel() {
-	c.Status = "canceled"
+	c.Status = Canceled
+}
+
+func (c *Campaign) Done() {
+	c.Status = Done
+}
+
+func (c *Campaign) Fail() {
+	c.Status = Fail
 }
 
 func (c *Campaign) Delete() {
-	c.Status = "deleted"
+	c.Status = Deleted
 }
 
 // feita para criar uma nova campanha
