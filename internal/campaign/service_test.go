@@ -32,7 +32,7 @@ func (r *repositoryMock) GetBy(id string) (*Campaign, error) {
 }
 
 var (
-	newCampaing = contract.NewCampaignDto{
+	newCampaing = contract.NewCampaignRequest{
 		Name:    "teste y",
 		Content: "body hi!",
 		Emails:  []string{"lucasdsc96@gmail.com"},

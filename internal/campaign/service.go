@@ -14,15 +14,15 @@ type ServiceImp struct {
 
 // izolando a capana de post
 type Service interface {
-	Create(newCampaign contract.NewCampaignDto) (string, error)
+	Create(newCampaign contract.NewCampaignRequest) (string, error)
 	GetBy(id string) (*contract.CampaignResponse, error)
 	Cancel(id string) error
 	Delete(id string) error
 	Start(id string) error
 }
 
-func (s *ServiceImp) Create(dto contract.NewCampaignDto) (string, error) {
-	campaing, err := NewCampaign(dto.Name, dto.Content, dto.Emails)
+func (s *ServiceImp) Create(dto contract.NewCampaignRequest) (string, error) {
+	campaing, err := NewCampaign(dto.Name, dto.Content, dto.Emails, dto.CreatedBy)
 	if err != nil {
 		return "", err
 	}
@@ -88,6 +88,17 @@ func (s *ServiceImp) Delete(id string) error {
 	return nil
 }
 
+func (s *ServiceImp) SendEmailAndUpdatedStatus(campaignSaved *Campaign) {
+	err := s.SendMail(campaignSaved)
+	if err != nil {
+		campaignSaved.Fail()
+	} else {
+		campaignSaved.Done()
+	}
+	s.Repository.Update(campaignSaved)
+
+}
+
 func (s *ServiceImp) Start(id string) error {
 	campaignSaved, err := s.getAndValidateStatusIsPending(id)
 	if err != nil {
@@ -99,15 +110,18 @@ func (s *ServiceImp) Start(id string) error {
 	}
 
 	// go routines
-	go func() {
-		err := s.SendMail(campaignSaved)
-		if err != nil {
-			campaignSaved.Fail()
-		} else {
-			campaignSaved.Done()
-		}
-		err = s.Repository.Update(campaignSaved)
-	}()
+	//go func() {
+	//	err := s.SendMail(campaignSaved)
+	//	if err != nil {
+	//		campaignSaved.Fail()
+	//	} else {
+	//		campaignSaved.Done()
+	//	}
+	//	err = s.Repository.Update(campaignSaved)
+	//}()
+
+	// metodo ja aplicado para go routine
+	go s.SendEmailAndUpdatedStatus(campaignSaved)
 
 	campaignSaved.Started()
 	err = s.Repository.Update(campaignSaved)

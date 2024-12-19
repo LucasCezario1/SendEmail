@@ -15,13 +15,13 @@ import (
 
 func Test_CampaignsPost_should_save_new_campaign(t *testing.T) {
 	assert := assert.New(t)
-	body := contract.NewCampaignDto{
+	body := contract.NewCampaignRequest{
 		Name:    "Teste",
 		Content: "HI LUCAS",
 		Emails:  []string{"test@test.com"},
 	}
 	serviceMock := new(internalMock.)
-	serviceMock.On("Create", mock.MatchedBy(func(req contract.NewCampaignDto) bool {
+	serviceMock.On("Create", mock.MatchedBy(func(req contract.NewCampaignRequest) bool {
 		if req.Name == body.Name &&
 			req.Content == body.Content {
 			return true
@@ -44,7 +44,7 @@ func Test_CampaignsPost_should_save_new_campaign(t *testing.T) {
 
 func Test_CampaignsPost_should_inform_error_when_exist(t *testing.T) {
 	assert := assert.New(t)
-	body := contract.NewCampaignDto{
+	body := contract.NewCampaignRequest{
 		Name:    "Teste",
 		Content: "HI LUCAS",
 		Emails:  []string{"test@test.com"},

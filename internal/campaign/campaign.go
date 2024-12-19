@@ -23,36 +23,43 @@ type Contact struct {
 }
 
 type Campaign struct {
-	ID        string    `validate:"required" gorm:"size:50"`
-	Name      string    `validate:"min=5,max=24" gorm:"size:100"`
-	CreatedOn time.Time `validate:"required"`
-	Content   string    `validate:"min=5,max=1024" gorm:"size:1024"`
+	ID        string    `validate:"required" gorm:"size:50; not null"`
+	Name      string    `validate:"min=5,max=24" gorm:"size:100;not null"`
+	CreatedOn time.Time `validate:"required" gorm:"not null" `
+	UpdatedOn time.Time
+	Content   string    `validate:"min=5,max=1024" gorm:"size:1024; not null"`
 	Contacts  []Contact `validate:"min=1,dive"`
-	Status    string    `gorm:"size:20"`
+	Status    string    `gorm:"size:20; not null"`
+	CreatedBy string    `validate:"email" gorm:"size:20; not null"`
 }
 
 func (c *Campaign) Started() {
 	c.Status = Started
+	c.UpdatedOn = time.Now()
 }
 
 func (c *Campaign) Cancel() {
 	c.Status = Canceled
+	c.UpdatedOn = time.Now()
 }
 
 func (c *Campaign) Done() {
 	c.Status = Done
+	c.UpdatedOn = time.Now()
 }
 
 func (c *Campaign) Fail() {
 	c.Status = Fail
+	c.UpdatedOn = time.Now()
 }
 
 func (c *Campaign) Delete() {
 	c.Status = Deleted
+	c.UpdatedOn = time.Now()
 }
 
 // feita para criar uma nova campanha
-func NewCampaign(name string, content string, emails []string) (*Campaign, error) {
+func NewCampaign(name string, content string, emails []string, createdBy string) (*Campaign, error) {
 
 	//contacts ele vira o emails
 	contacts := make([]Contact, len(emails))
@@ -67,6 +74,7 @@ func NewCampaign(name string, content string, emails []string) (*Campaign, error
 		CreatedOn: time.Now(),
 		Contacts:  contacts,
 		Status:    Pending,
+		CreatedBy: createdBy,
 	}
 	err := internalErrors.ValidateStruct(campaign)
 	if err != nil {
